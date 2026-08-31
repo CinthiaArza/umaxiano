@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Valores UMAX · Puzle</title>
 
+<!--
+  ╔══════════════════════════════════════════════════════════════════════╗
+  ║  PUZLE DE VALORES · Universidad María Auxiliadora (UMAX)              ║
+  ║  Propuesta 1 · Presentación a pantalla completa (16:9)               ║
+  ╠══════════════════════════════════════════════════════════════════════╣
+  ║  PERSONALIZACIÓN → bloque CONFIG (en el script).                     ║
+  ║   · IMAGEN_PROYECTO → UNA imagen (logo ADN UMAX). Ideal 16:9.        ║
+  ║   · LOGO_UMAX       → logo de la marca (vacío = texto).              ║
+  ║   · VALORES[]       → 9 valores (piezas 1–9).                        ║
+  ║   · CENTRAL         → pieza 10 (central): el video que engloba todo. ║
+  ║  Recomendado: pantalla completa del navegador (tecla F11).           ║
+  ╚══════════════════════════════════════════════════════════════════════╝
+-->
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -73,12 +87,12 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 .stage.on{display:flex}
 .stage.dark{background:#000}
 .stage.light{background:rgba(250,248,244,.94);backdrop-filter:blur(8px)}
-.stage-inner{width:100%;max-width:820px;text-align:center;animation:zoomIn .45s cubic-bezier(.2,1,.3,1)}
+.stage-inner{width:100%;max-width:900px;max-height:100svh;text-align:center;animation:zoomIn .45s cubic-bezier(.2,1,.3,1)}
 @keyframes zoomIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
 .value-eyebrow{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--oro);margin-bottom:14px}
-.controls{margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.msg-eyebrow{font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;margin-bottom:20px;color:#e8626a}
-.msg-text{font-family:var(--display);font-size:clamp(1.9rem,5vw,3.4rem);line-height:1.2;max-width:22ch;margin:0 auto;color:#fff;animation:rise 1s ease both}
+.controls{margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.msg-eyebrow{font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;margin-bottom:18px;color:#e8626a}
+.msg-text{font-family:var(--display);font-size:2.4rem;line-height:1.28;max-width:min(30ch,90vw);margin:0 auto;color:#fff;animation:rise 1s ease both}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .reveal{perspective:1300px}
 .flip{position:relative;width:min(360px,74vw);aspect-ratio:1/1;margin:0 auto;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.2,.85,.2,1)}
@@ -110,7 +124,7 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 <div class="topbar">
   <div class="brand">
     <img id="logo" alt="Universidad María Auxiliadora" style="display:none" />
-    <span class="wordmark" id="wordmark">UMAX</span>
+    <span class="wordmark" id="wordmark">Universidad María Auxiliadora · Valores</span>
   </div>
   <div class="count" id="count">0 / 10</div>
 </div>
@@ -151,20 +165,20 @@ const IMAGEN_PROYECTO = IMG_DATA;  // DEMO: escudo UMAX embebido. Reemplazá por
 const LOGO_UMAX       = "";  // logo de la marca (vacío = texto)
 
 const VALORES = [
-  { nombre:"Cordialidad", youtube:"l3lM97r8zG4", fondo:"", mensaje:"La cordialidad abre puertas: un trato amable transforma cada encuentro en nuestra Universidad." },
-  { nombre:"Valor 2", youtube:"", fondo:"", mensaje:"Aquí va el mensaje del valor 2." },
-  { nombre:"Valor 3", youtube:"", fondo:"", mensaje:"Aquí va el mensaje del valor 3." },
-  { nombre:"Valor 4", youtube:"", fondo:"", mensaje:"Aquí va el mensaje del valor 4." },
-  { nombre:"Valor 5", youtube:"", fondo:"", mensaje:"Aquí va el mensaje del valor 5." },
-  { nombre:"Valor 6", youtube:"", fondo:"", mensaje:"Aquí va el mensaje del valor 6." },
-  { nombre:"Valor 7", youtube:"", fondo:"", mensaje:"Aquí va el mensaje del valor 7." },
-  { nombre:"Valor 8", youtube:"", fondo:"", mensaje:"Aquí va el mensaje del valor 8." },
-  { nombre:"Valor 9", youtube:"", fondo:"", mensaje:"Aquí va el mensaje del valor 9." },
+  { nombre:"Integridad",     youtube:"",           fondo:"", mensaje:"Aquí va el mensaje de Integridad." },
+  { nombre:"Cordialidad",    youtube:"l3lM97r8zG4", fondo:"", mensaje:"La cordialidad abre puertas: un trato amable transforma cada encuentro en nuestra Universidad." },
+  { nombre:"Servicio",       youtube:"",           fondo:"", mensaje:"Aquí va el mensaje de Servicio." },
+  { nombre:"Solidaridad",    youtube:"",           fondo:"", mensaje:"Aquí va el mensaje de Solidaridad." },
+  { nombre:"Empatía",        youtube:"",           fondo:"", mensaje:"Aquí va el mensaje de Empatía." },
+  { nombre:"Compromiso",     youtube:"",           fondo:"", mensaje:"Aquí va el mensaje de Compromiso." },
+  { nombre:"Empoderamiento", youtube:"",           fondo:"", mensaje:"Aquí va el mensaje de Empoderamiento." },
+  { nombre:"Creatividad",    youtube:"",           fondo:"", mensaje:"Aquí va el mensaje de Creatividad." },
+  { nombre:"Pertenencia",    youtube:"",           fondo:"", mensaje:"Aquí va el mensaje de Pertenencia." },
 ];
 
 const CENTRAL = {
-  nombre:"No un valor entre diez", youtube:"czwn_blX1wU", fondo:"",
-  mensaje:"Sino el hilo dorado que teje, une y da vida a los otros nueve: integridad, cordialidad, servicio, solidaridad, empatçia, compromiso, empoderamiento, creatividad y pertenencia. Bajo la mirada de María Auxiliadora, nuestro decálogo se convierte en una sola alma y nuestras acciones",
+  nombre:"Espiritualidad", youtube:"czwn_blX1wU", fondo:"",
+  mensaje:"No un valor entre diez, sino el hilo dorado que teje, une y da vida a los otros nueve: integridad, cordialidad, servicio, solidaridad, empatía, compromiso, empoderamiento, creatividad y pertenencia. Bajo la mirada de María Auxiliadora, nuestro decálogo se convierte en una sola alma y nuestras acciones.",
   cierre:"Este es el ADN UMAX: la suma de nuestros valores en acción."
 };
 
@@ -301,10 +315,24 @@ function afterVideo(i){
 
 /* ── pantalla negra + mensaje ── */
 function stepMessage(i){
-  const it=ITEMS[i];const central=(i===9);
-  show(`<p class="msg-eyebrow">${central?'Nuestro ADN':'Un momento para reflexionar'}</p>
+  const it=ITEMS[i];
+  show(`<p class="msg-eyebrow">Un momento para reflexionar</p>
     <p class="msg-text">${it.mensaje}</p>
-    <div class="controls"><button class="btn btn-ghost" onclick="${central?'finalReveal()':`stepReveal(${i})`}">${central?'Ver la imagen completa':'Descubrir el valor'}</button></div>`,'dark');
+    <div class="controls"><button class="btn btn-ghost" onclick="stepReveal(${i})">Descubrir el valor</button></div>`,'dark');
+  fitMessage();
+}
+
+// reduce el tamaño del texto hasta que el mensaje entre en la pantalla
+function fitMessage(){
+  requestAnimationFrame(()=>{
+    const el=inner.querySelector('.msg-text');
+    if(!el) return;
+    const avail=window.innerHeight*0.66;
+    let size=Math.min(window.innerWidth*0.045, 52);
+    el.style.fontSize=size+'px';
+    let guard=0;
+    while(el.scrollHeight>avail && size>15 && guard<80){ size-=1.5; el.style.fontSize=size+'px'; guard++; }
+  });
 }
 
 /* ── giro que revela el valor ── */
@@ -331,13 +359,11 @@ function settlePiece(i){
   solved++;updateCount();
   if(i<8){ current=i+1;const nx=pieces[i+1];nx.classList.remove('locked');nx.classList.add('available');setHint('Continuá con la siguiente pieza.'); }
   else if(i===8){ current=9;const c=pieces[9];c.classList.remove('locked');c.classList.add('available');setHint('Tocá la pieza central para descubrir lo que une todo.'); }
+  else if(i===9){ finalReveal(); }
 }
 
 function finalReveal(){
-  hide();
-  const c=pieces[9];c.classList.remove('available');c.classList.add('done','settling');
-  setTimeout(()=>c.classList.remove('settling'),800);
-  solved=10;updateCount();setHint('');
+  setHint('');
   // efecto de zoom sobre el puzle ya armado
   setTimeout(()=>board.classList.add('complete'),150);
   // mostrar únicamente "ADN completo"
