@@ -5,20 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Valores UMAX · Puzle</title>
 
-<!--
-  ╔══════════════════════════════════════════════════════════════════════╗
-  ║  PUZLE DE VALORES · Universidad María Auxiliadora (UMAX)              ║
-  ║  Propuesta 1 · Presentación a pantalla completa (16:9)               ║
-  ╠══════════════════════════════════════════════════════════════════════╣
-  ║  PERSONALIZACIÓN → bloque CONFIG (en el script).                     ║
-  ║   · IMAGEN_PROYECTO → UNA imagen (logo ADN UMAX). Ideal 16:9.        ║
-  ║   · LOGO_UMAX       → logo de la marca (vacío = texto).              ║
-  ║   · VALORES[]       → 9 valores (piezas 1–9).                        ║
-  ║   · CENTRAL         → pieza 10 (central): el video que engloba todo. ║
-  ║  Recomendado: pantalla completa del navegador (tecla F11).           ║
-  ╚══════════════════════════════════════════════════════════════════════╝
--->
-
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -124,7 +110,7 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 <div class="topbar">
   <div class="brand">
     <img id="logo" alt="Universidad María Auxiliadora" style="display:none" />
-    <span class="wordmark" id="wordmark">Universidad María Auxiliadora · Valores</span>
+    <span class="wordmark" id="wordmark">UMAX</span>
   </div>
   <div class="count" id="count">0 / 10</div>
 </div>
@@ -177,8 +163,8 @@ const VALORES = [
 ];
 
 const CENTRAL = {
-  nombre:"Nuestro ADN", youtube:"", fondo:"",
-  mensaje:"Cada valor es una pieza. Juntas, forman el ADN de nuestra Universidad.",
+  nombre:"No un valor entre diez", youtube:"", fondo:"",
+  mensaje:"Sino el hilo dorado que teje, une y da vida a los otros nueve: integridad, cordialidad, servicio, solidaridad, empatçia, compromiso, empoderamiento, creatividad y pertenencia. Bajo la mirada de María Auxiliadora, nuestro decálogo se convierte en una sola alma y nuestras acciones",
   cierre:"Este es el ADN UMAX: la suma de nuestros valores en acción."
 };
 
