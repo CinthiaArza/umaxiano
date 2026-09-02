@@ -248,7 +248,7 @@ function wrapName(cx,cy,idx,name,color,muted,boxW,boxH,central){
   t.setAttribute('text-anchor','middle');t.setAttribute('font-family',"'Inter',system-ui,sans-serif");t.setAttribute('font-weight','700');
   const lb=document.createElementNS(SVGNS,'tspan');
   lb.setAttribute('x',cx);lb.setAttribute('y',top+labelFS);lb.setAttribute('font-size',labelFS);lb.setAttribute('fill',muted);lb.setAttribute('letter-spacing','3');lb.setAttribute('font-weight','600');lb.setAttribute('stroke','#fff');lb.setAttribute('stroke-width',Math.max(2,labelFS*0.16));lb.setAttribute('paint-order','stroke');lb.setAttribute('stroke-linejoin','round');
-  lb.textContent='VALOR '+idx;
+  lb.textContent='Valor '+idx;
   t.appendChild(lb);
   const nameTop=top+labelLh;
   lines.forEach((ln,k)=>{const ts=document.createElementNS(SVGNS,'tspan');ts.setAttribute('x',cx);ts.setAttribute('y',nameTop+fs+k*lh);ts.setAttribute('font-size',fs);ts.setAttribute('fill',color);ts.setAttribute('letter-spacing','.5');ts.setAttribute('stroke','#fff');ts.setAttribute('stroke-width',Math.max(3,fs*0.14));ts.setAttribute('paint-order','stroke');ts.setAttribute('stroke-linejoin','round');ts.textContent=ln;t.appendChild(ts);});
