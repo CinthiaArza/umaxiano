@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>UMAXIANOS</title>
-
+<title>UMAXIANO</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -58,6 +57,7 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 .pieza.done{cursor:default}
 .pieza .namecard{opacity:0;transition:opacity .6s ease}
 .pieza.named .namecard{opacity:1}
+.pieza.named .slice-img{opacity:1}
 .pieza.done .cover{opacity:0;pointer-events:none}
 .pieza.done .contorno{stroke:var(--tinta);stroke-opacity:.14;stroke-width:1.5}
 .pieza.revealed .namecard{opacity:0}
@@ -247,11 +247,11 @@ function wrapName(cx,cy,idx,name,color,muted,boxW,boxH,central){
   const t=document.createElementNS(SVGNS,'text');
   t.setAttribute('text-anchor','middle');t.setAttribute('font-family',"'Inter',system-ui,sans-serif");t.setAttribute('font-weight','700');
   const lb=document.createElementNS(SVGNS,'tspan');
-  lb.setAttribute('x',cx);lb.setAttribute('y',top+labelFS);lb.setAttribute('font-size',labelFS);lb.setAttribute('fill',muted);lb.setAttribute('letter-spacing','3');lb.setAttribute('font-weight','600');
+  lb.setAttribute('x',cx);lb.setAttribute('y',top+labelFS);lb.setAttribute('font-size',labelFS);lb.setAttribute('fill',muted);lb.setAttribute('letter-spacing','3');lb.setAttribute('font-weight','600');lb.setAttribute('stroke','#fff');lb.setAttribute('stroke-width',Math.max(2,labelFS*0.16));lb.setAttribute('paint-order','stroke');lb.setAttribute('stroke-linejoin','round');
   lb.textContent='VALOR '+idx;
   t.appendChild(lb);
   const nameTop=top+labelLh;
-  lines.forEach((ln,k)=>{const ts=document.createElementNS(SVGNS,'tspan');ts.setAttribute('x',cx);ts.setAttribute('y',nameTop+fs+k*lh);ts.setAttribute('font-size',fs);ts.setAttribute('fill',color);ts.setAttribute('letter-spacing','.5');ts.textContent=ln;t.appendChild(ts);});
+  lines.forEach((ln,k)=>{const ts=document.createElementNS(SVGNS,'tspan');ts.setAttribute('x',cx);ts.setAttribute('y',nameTop+fs+k*lh);ts.setAttribute('font-size',fs);ts.setAttribute('fill',color);ts.setAttribute('letter-spacing','.5');ts.setAttribute('stroke','#fff');ts.setAttribute('stroke-width',Math.max(3,fs*0.14));ts.setAttribute('paint-order','stroke');ts.setAttribute('stroke-linejoin','round');ts.textContent=ln;t.appendChild(ts);});
   return t;
 }
 function readable(hex){const h=hex.replace('#','');let r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);let f=1;const L=()=>0.2126*r*f+0.7152*g*f+0.0722*b*f;while(L()>120&&f>0.18)f-=0.08;return `rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`;}
@@ -301,7 +301,6 @@ PIECE_PATHS.forEach((d,i)=>{
 
   // 2) cara descubierta: fondo BLANCO + nombre del valor
   const nc=document.createElementNS(SVGNS,'g');nc.setAttribute('class','namecard');nc.setAttribute('clip-path','url(#clip'+i+')');
-  const wr=document.createElementNS(SVGNS,'rect');wr.setAttribute('width',VBW);wr.setAttribute('height',VBH);wr.setAttribute('fill','#ffffff');nc.appendChild(wr);
   nc.appendChild(wrapName(CENTERS[i][0],CENTERS[i][1],(i+1),ITEMS[i].nombre,readable(ACCENTS[i][0]),'#9b9b9b',BOX[i][0],BOX[i][1],isCentral));
   g.appendChild(nc);
 
@@ -450,8 +449,8 @@ function settlePiece(i){
   if(i<9) p.classList.add('named');
   setTimeout(()=>p.classList.remove('settling'),800);
   solved++;updateCount();
-  if(i<8){ current=i+1;const nx=pieces[i+1];nx.classList.remove('locked');nx.classList.add('available');setHint('Continuá con la siguiente pieza.'); }
-  else if(i===8){ current=9;const c=pieces[9];c.classList.remove('locked');c.classList.add('available');setHint('Tocá la pieza central para descubrir lo que une todo.'); }
+  if(i<8){ current=i+1;const nx=pieces[i+1];nx.classList.remove('locked');nx.classList.add('available');setHint(''); }
+  else if(i===8){ current=9;const c=pieces[9];c.classList.remove('locked');c.classList.add('available');setHint(''); }
   else if(i===9){ finalReveal(); }
 }
 
