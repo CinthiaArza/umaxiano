@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>UMAXIANO</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -24,13 +23,25 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 /* ── PUZLE A PANTALLA COMPLETA ── */
 .board-svg{position:fixed;inset:0;width:100vw;height:100svh;display:block;transition:transform 2.6s cubic-bezier(.2,.7,.2,1);transform-origin:50% 50%}
 .board-svg.complete{transform:scale(1.08)}
-.endcard{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8vh;pointer-events:none;
-  background:radial-gradient(120% 85% at 50% 55%, rgba(250,248,244,0) 42%, rgba(250,248,244,.82) 100%)}
-.endcard.on{display:flex;animation:fadein .9s ease both}
+/* cara final blanca con el nombre del valor */
+/* cierre: destellos + logo UMAXIANOS */
+.endcard{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2.2vh;pointer-events:none;
+  background:radial-gradient(120% 100% at 50% 45%, #ffffff 55%, #f2eee7 100%)}
+.endcard.on{display:flex;animation:fadein .8s ease both}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-.endcard .endtext{font-family:var(--display);font-size:clamp(2.4rem,8vh,4.6rem);color:var(--rojo);text-shadow:0 2px 24px rgba(250,248,244,.95);animation:rise 1s ease .2s both}
-.endcard .endrestart{pointer-events:auto;margin-top:18px;background:rgba(255,255,255,.75);color:var(--tinta);border-color:var(--linea)}
+.final-logo{width:min(74vh,92vw);aspect-ratio:16/9;background-image:var(--img);background-size:contain;background-repeat:no-repeat;background-position:center;
+  animation:logoPop 1s cubic-bezier(.2,1.4,.3,1) both, logoGlow 3s ease-in-out 1s infinite}
+@keyframes logoPop{0%{opacity:0;transform:scale(.6) rotate(-4deg)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes logoGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(120,44,191,0))}50%{filter:drop-shadow(0 0 26px rgba(120,44,191,.35))}}
+.endcard .endtext{font-family:var(--display);font-size:clamp(2.2rem,7vh,4rem);color:var(--rojo);animation:rise 1s ease .3s both}
+.endcard .endrestart{pointer-events:auto;background:rgba(255,255,255,.8);color:var(--tinta);border-color:var(--linea)}
 .endcard .endrestart:hover{border-color:var(--gris)}
+.sparkles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.spark{position:absolute;width:var(--sz);height:var(--sz);border-radius:50%;
+  background:radial-gradient(circle, #fff 0%, #ffd76a 45%, rgba(255,215,106,0) 70%);
+  opacity:0;transform:scale(0);animation:twinkle 1.8s ease-in-out infinite}
+.spark::before,.spark::after{content:"";position:absolute;inset:0;background:inherit;border-radius:inherit}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1.6)}}
 .pieza{cursor:pointer}
 .pieza .cover{transition:opacity .5s ease}
 .pieza .contorno{fill:none;stroke:#fff;stroke-opacity:.5;stroke-width:2.5;vector-effect:non-scaling-stroke;transition:stroke-opacity .5s,stroke .4s,stroke-width .3s}
@@ -43,9 +54,13 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 .pieza.available .contorno{stroke:#fff;stroke-opacity:1;stroke-width:4;filter:drop-shadow(0 0 10px rgba(255,255,255,.6))}
 .pieza:hover.available{transform:scale(1.02);transform-box:fill-box;transform-origin:center}
 .pieza.done{cursor:default}
+.pieza .namecard{opacity:0;transition:opacity .6s ease}
+.pieza.named .namecard{opacity:1}
 .pieza.done .cover{opacity:0;pointer-events:none}
-.pieza.done .slice-img{opacity:1}
-.pieza.done .contorno{stroke:var(--tinta);stroke-opacity:.12;stroke-width:1.5}
+.pieza.done .contorno{stroke:var(--tinta);stroke-opacity:.14;stroke-width:1.5}
+.pieza.revealed .namecard{opacity:0}
+.pieza.revealed .slice-img{opacity:1}
+.nmc{display:flex;align-items:center;justify-content:center;height:100%;text-align:center;font-family:var(--ui);font-weight:700;line-height:1.12;letter-spacing:.02em}
 .pieza.settling{animation:settle .8s cubic-bezier(.2,1.4,.3,1);transform-box:fill-box;transform-origin:center}
 @keyframes settle{0%{transform:scale(1.06)}55%{transform:scale(.97)}100%{transform:scale(1)}}
 
@@ -68,6 +83,16 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 .zoomer .zvideo{position:absolute;inset:0;opacity:0;transition:opacity .35s ease .1s;background:#000}
 .zoomer .zvideo iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
+/* ── destellos del cierre ── */
+#sparkles{position:fixed;inset:0;z-index:38;pointer-events:none;display:none}
+#sparkles.on{display:block}
+.spark{position:absolute;width:var(--sz);height:var(--sz);transform:translate(-50%,-50%);opacity:0;
+  background:radial-gradient(circle,#fff 0%,#ffd76a 45%,transparent 72%);border-radius:50%;
+  animation:tw 1.7s ease-in-out infinite}
+.spark::before,.spark::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:linear-gradient(#fff,#ffd76a)}
+.spark::before{width:1.6px;height:230%}
+.spark::after{height:1.6px;width:230%}
+@keyframes tw{0%,100%{opacity:0;transform:translate(-50%,-50%) scale(.25)}50%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 /* ── overlays de mensaje / giro / final ── */
 .stage{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:clamp(16px,4vw,48px)}
 .stage.on{display:flex}
@@ -114,10 +139,13 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
   </div>
   <div class="count" id="count">0 / 10</div>
 </div>
-<div class="hint" id="hint">Tocá la pieza que se resalta para comenzar.</div>
+<div class="hint" id="hint"></div>
 
+<div id="sparkles"></div>
 <div class="endcard" id="endcard">
-  <div class="endtext">ADN completo</div>
+  <div class="sparkles" id="sparkles"></div>
+  <div class="final-logo" id="finalLogo"></div>
+  <div class="endtext"></div>
   <button class="btn endrestart" onclick="location.reload()">Reiniciar</button>
 </div>
 
@@ -150,10 +178,7 @@ const IMG_DATA = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAQ4CAIAAABn
 const IMAGEN_PROYECTO = IMG_DATA;  // DEMO: escudo UMAX embebido. Reemplazá por "img/adn.png" cuando publiques.
 const LOGO_UMAX       = "";  // logo de la marca (vacío = texto)
 
-const VALORES = [
-  { nombre:"Integridad",                youtube:"LMND5Gy_dhE", fondo:"", mensaje:"Actuamos con rectitud, honestidad, ética y transparencia, en cada compromiso." },
-  { nombre:"Cordialidad",               youtube:"RSemKM5ev20", fondo:"", mensaje:"Valoramos a cada persona, promoviendo el diálogo y la sana convivencia." },
-  { nombre:"Don de Servicio",           youtube:"",            fondo:"", mensaje:"Servimos con generosidad y actitud proactiva, contribuyendo al bienestar de nuestra comunidad." },
+al bienestar de nuestra comunidad." },
   { nombre:"Solidaridad",               youtube:"Cilfgh-G0Nc", fondo:"", mensaje:"Extendemos la mano a quien nos necesita, sin esperar nada a cambio." },
   { nombre:"Empatía",                   youtube:"sz_HYdD9qvM", fondo:"", mensaje:"Escuchamos para comprender y comprendemos para servir." },
   { nombre:"Compromiso con la Calidad", youtube:"",            fondo:"", mensaje:"Nos comprometemos con la excelencia mediante la mejora continua y la calidad en cada acción." },
@@ -184,6 +209,27 @@ const ACCENTS=[
 ];
 const ITEMS = VALORES.concat([CENTRAL]);
 function lum(hex){const h=hex.replace('#','');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return 0.2126*r+0.7152*g+0.0722*b;}
+const BOX=[[320,180],[640,180],[320,180],[320,180],[320,180],[320,180],[640,180],[320,180],[320,360],[640,360]];
+function wrapName(cx,cy,name,color,boxW,boxH,central){
+  const words=name.toUpperCase().split(/\s+/);
+  let fs= central?54:34;
+  const padW=boxW-44, padH=boxH-30;
+  const longest=Math.max.apply(null,words.map(w=>w.length));
+  while(longest*fs*0.60>padW && fs>14) fs-=1;
+  const cpl=Math.max(4,Math.floor(padW/(fs*0.60)));
+  const lines=[]; let line='';
+  for(const w of words){ const t=line?line+' '+w:w; if(t.length<=cpl){line=t;} else {if(line)lines.push(line); line=w;} }
+  if(line)lines.push(line);
+  let lh=fs*1.12;
+  while(lines.length*lh>padH && fs>12){ fs-=1; lh=fs*1.12; }
+  const t=document.createElementNS(SVGNS,'text');
+  t.setAttribute('x',cx);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');
+  t.setAttribute('fill',color);t.setAttribute('font-family',"'Inter',system-ui,sans-serif");t.setAttribute('font-weight','700');t.setAttribute('font-size',fs);t.setAttribute('letter-spacing','.5');
+  const startY=cy-(lines.length-1)*lh/2;
+  lines.forEach((ln,k)=>{const ts=document.createElementNS(SVGNS,'tspan');ts.setAttribute('x',cx);ts.setAttribute('y',startY+k*lh);ts.textContent=ln;t.appendChild(ts);});
+  return t;
+}
+function readable(hex){const h=hex.replace('#','');let r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);let f=1;const L=()=>0.2126*r*f+0.7152*g*f+0.0722*b*f;while(L()>120&&f>0.18)f-=0.08;return `rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`;}
 
 
 let current=0, solved=0, player=null;
@@ -218,6 +264,8 @@ PIECE_PATHS.forEach((d,i)=>{
   const isCentral=(i===9);
   const g=document.createElementNS(SVGNS,'g');
   g.setAttribute('class','pieza locked');g.style.animationDelay=(i*0.05)+'s';
+
+  // 1) porción del logo UMAXIANOS (oculta hasta el final)
   if(hasImg){
     const img=document.createElementNS(SVGNS,'image');
     img.setAttribute('href',IMAGEN_PROYECTO);img.setAttribute('x','0');img.setAttribute('y','0');
@@ -225,6 +273,14 @@ PIECE_PATHS.forEach((d,i)=>{
     img.setAttribute('preserveAspectRatio','xMidYMid slice');
     img.setAttribute('clip-path','url(#clip'+i+')');img.setAttribute('class','slice-img');g.appendChild(img);
   }
+
+  // 2) cara descubierta: fondo BLANCO + nombre del valor
+  const nc=document.createElementNS(SVGNS,'g');nc.setAttribute('class','namecard');nc.setAttribute('clip-path','url(#clip'+i+')');
+  const wr=document.createElementNS(SVGNS,'rect');wr.setAttribute('width',VBW);wr.setAttribute('height',VBH);wr.setAttribute('fill','#ffffff');nc.appendChild(wr);
+  nc.appendChild(wrapName(CENTERS[i][0],CENTERS[i][1],ITEMS[i].nombre,readable(ACCENTS[i][0]),BOX[i][0],BOX[i][1],isCentral));
+  g.appendChild(nc);
+
+  // 3) cara inicial: color + número
   const cover=document.createElementNS(SVGNS,'g');cover.setAttribute('class','cover');cover.setAttribute('clip-path','url(#clip'+i+')');
   const fondo=ITEMS[i].fondo;
   if(fondo){
@@ -238,12 +294,13 @@ PIECE_PATHS.forEach((d,i)=>{
   const num=document.createElementNS(SVGNS,'text');num.setAttribute('class','num');
   num.setAttribute('x',CENTERS[i][0]);num.setAttribute('y',CENTERS[i][1]);
   num.setAttribute('font-size',isCentral?'150':'92');
-  const claro = lum(ACCENTS[i][0])>150;               // color de pieza claro
+  const claro = lum(ACCENTS[i][0])>150;
   num.setAttribute('fill', claro ? '#141013' : '#fff');
   num.setAttribute('stroke', claro ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.22)');
   num.setAttribute('stroke-width','2'); num.setAttribute('paint-order','stroke');
   num.textContent=(i+1);cover.appendChild(num);
   g.appendChild(cover);
+
   const out=document.createElementNS(SVGNS,'path');out.setAttribute('class','contorno');out.setAttribute('d',d);g.appendChild(out);
   g.addEventListener('click',()=>{ if(i===current && !g.classList.contains('done')) openItem(i); });
   board.appendChild(g);
@@ -365,6 +422,7 @@ function stepReveal(i){
 function settlePiece(i){
   hide();
   const p=pieces[i];p.classList.remove('available');p.classList.add('done','settling');
+  if(i<9) p.classList.add('named');
   setTimeout(()=>p.classList.remove('settling'),800);
   solved++;updateCount();
   if(i<8){ current=i+1;const nx=pieces[i+1];nx.classList.remove('locked');nx.classList.add('available');setHint('Continuá con la siguiente pieza.'); }
@@ -374,9 +432,13 @@ function settlePiece(i){
 
 function finalReveal(){
   setHint('');
-  // efecto de zoom sobre el puzle ya armado
+  pieces.forEach(p=>p.classList.add('revealed'));   // revela la imagen UMAXIANOS
+  pieces[9].classList.add('done');                  // apaga la tapa central
+  // destellos
+  const sp=document.getElementById('sparkles'); sp.innerHTML='';
+  for(let k=0;k<64;k++){const s=document.createElement('div');s.className='spark';s.style.left=(Math.random()*100)+'vw';s.style.top=(Math.random()*100)+'vh';s.style.animationDelay=(Math.random()*1.4)+'s';s.style.setProperty('--sz',(4+Math.random()*11)+'px');sp.appendChild(s);}
+  sp.classList.add('on');
   setTimeout(()=>board.classList.add('complete'),150);
-  // mostrar únicamente "ADN completo"
   setTimeout(()=>document.getElementById('endcard').classList.add('on'),900);
 }
 
