@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>UMAXIANO</title>
+<title>UMAXIANOS</title>
+
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -21,8 +23,8 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ── PUZLE A PANTALLA COMPLETA ── */
-.board-svg{position:fixed;inset:0;width:100vw;height:100svh;display:block;transition:transform 2.6s cubic-bezier(.2,.7,.2,1);transform-origin:50% 50%}
-.board-svg.complete{transform:scale(1.08)}
+.board-svg{position:fixed;inset:0;width:100vw;height:100svh;display:block;transition:transform 3.2s cubic-bezier(.2,.7,.2,1);transform-origin:50% 50%}
+.board-svg.complete{transform:scale(1.16)}
 /* cara final blanca con el nombre del valor */
 /* cierre: destellos + logo UMAXIANOS */
 .endcard{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2.2vh;pointer-events:none;
@@ -84,6 +86,17 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 .zoomer .zvideo iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
 /* ── destellos del cierre ── */
+#burst{position:fixed;left:50%;top:50%;z-index:37;pointer-events:none;display:none;width:40px;height:40px;border-radius:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(255,244,205,.95),rgba(255,215,106,.55),transparent 70%)}
+#burst.on{display:block;animation:burst 1.15s ease-out both}
+@keyframes burst{0%{opacity:.95;width:60px;height:60px}100%{opacity:0;width:170vmax;height:170vmax}}
+#shine{position:fixed;inset:0;z-index:37;pointer-events:none;display:none;overflow:hidden}
+#shine.on{display:block}
+#shine::before{content:"";position:absolute;top:-50%;left:-60%;width:38%;height:200%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);transform:rotate(18deg);
+  animation:sweep 1.6s ease-in-out .15s 1 both}
+@keyframes sweep{from{left:-60%}to{left:120%}}
+
 #sparkles{position:fixed;inset:0;z-index:38;pointer-events:none;display:none}
 #sparkles.on{display:block}
 .spark{position:absolute;width:var(--sz);height:var(--sz);transform:translate(-50%,-50%);opacity:0;
@@ -142,6 +155,8 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 <div class="hint" id="hint"></div>
 
 <div id="sparkles"></div>
+<div id="shine"></div>
+<div id="burst"></div>
 <div class="endcard" id="endcard">
   <div class="sparkles" id="sparkles"></div>
   <div class="final-logo" id="finalLogo"></div>
@@ -205,7 +220,7 @@ const ACCENTS=[
   ['#C70700','#8b0400'], // 4 Solidaridad · rojo
   ['#025425','#027317'], // 5 Empatía · verde oscuro
   ['#F7FF00','#F3F736'], // 6 Compromiso con la Calidad · amarillo
-  ['#EF9000','#E67F10'], // 7 Empoderamiento · naranja (asumido)
+  ['#EF9000','#E67F10'], // 7 Empoderamiento · naranja
   ['#00C3FF','#0088b2'], // 8 Creatividad · celeste
   ['#800020','#590016'], // 9 Sentido de Pertenencia · bordo
   ['#680691','#480465'], // 10 Espiritualidad · violeta (central)
@@ -213,10 +228,13 @@ const ACCENTS=[
 const ITEMS = VALORES.concat([CENTRAL]);
 function lum(hex){const h=hex.replace('#','');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return 0.2126*r+0.7152*g+0.0722*b;}
 const BOX=[[320,180],[640,180],[320,180],[320,180],[320,180],[320,180],[640,180],[320,180],[320,360],[640,360]];
-function wrapName(cx,cy,name,color,boxW,boxH,central){
+function wrapName(cx,cy,idx,name,color,muted,boxW,boxH,central){
   const words=name.toUpperCase().split(/\s+/);
-  let fs= central?54:34;
-  const padW=boxW-44, padH=boxH-30;
+  let fs= central?52:32;
+  const padW=boxW-44;
+  const labelFS=Math.max(15,Math.round((central?52:32)*0.44));
+  const labelLh=labelFS*1.8;
+  const padH=boxH-30-labelLh;
   const longest=Math.max.apply(null,words.map(w=>w.length));
   while(longest*fs*0.60>padW && fs>14) fs-=1;
   const cpl=Math.max(4,Math.floor(padW/(fs*0.60)));
@@ -225,11 +243,15 @@ function wrapName(cx,cy,name,color,boxW,boxH,central){
   if(line)lines.push(line);
   let lh=fs*1.12;
   while(lines.length*lh>padH && fs>12){ fs-=1; lh=fs*1.12; }
+  const total=labelLh+lines.length*lh, top=cy-total/2;
   const t=document.createElementNS(SVGNS,'text');
-  t.setAttribute('x',cx);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');
-  t.setAttribute('fill',color);t.setAttribute('font-family',"'Inter',system-ui,sans-serif");t.setAttribute('font-weight','700');t.setAttribute('font-size',fs);t.setAttribute('letter-spacing','.5');
-  const startY=cy-(lines.length-1)*lh/2;
-  lines.forEach((ln,k)=>{const ts=document.createElementNS(SVGNS,'tspan');ts.setAttribute('x',cx);ts.setAttribute('y',startY+k*lh);ts.textContent=ln;t.appendChild(ts);});
+  t.setAttribute('text-anchor','middle');t.setAttribute('font-family',"'Inter',system-ui,sans-serif");t.setAttribute('font-weight','700');
+  const lb=document.createElementNS(SVGNS,'tspan');
+  lb.setAttribute('x',cx);lb.setAttribute('y',top+labelFS);lb.setAttribute('font-size',labelFS);lb.setAttribute('fill',muted);lb.setAttribute('letter-spacing','3');lb.setAttribute('font-weight','600');
+  lb.textContent='VALOR '+idx;
+  t.appendChild(lb);
+  const nameTop=top+labelLh;
+  lines.forEach((ln,k)=>{const ts=document.createElementNS(SVGNS,'tspan');ts.setAttribute('x',cx);ts.setAttribute('y',nameTop+fs+k*lh);ts.setAttribute('font-size',fs);ts.setAttribute('fill',color);ts.setAttribute('letter-spacing','.5');ts.textContent=ln;t.appendChild(ts);});
   return t;
 }
 function readable(hex){const h=hex.replace('#','');let r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);let f=1;const L=()=>0.2126*r*f+0.7152*g*f+0.0722*b*f;while(L()>120&&f>0.18)f-=0.08;return `rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`;}
@@ -280,7 +302,7 @@ PIECE_PATHS.forEach((d,i)=>{
   // 2) cara descubierta: fondo BLANCO + nombre del valor
   const nc=document.createElementNS(SVGNS,'g');nc.setAttribute('class','namecard');nc.setAttribute('clip-path','url(#clip'+i+')');
   const wr=document.createElementNS(SVGNS,'rect');wr.setAttribute('width',VBW);wr.setAttribute('height',VBH);wr.setAttribute('fill','#ffffff');nc.appendChild(wr);
-  nc.appendChild(wrapName(CENTERS[i][0],CENTERS[i][1],ITEMS[i].nombre,readable(ACCENTS[i][0]),BOX[i][0],BOX[i][1],isCentral));
+  nc.appendChild(wrapName(CENTERS[i][0],CENTERS[i][1],(i+1),ITEMS[i].nombre,readable(ACCENTS[i][0]),'#9b9b9b',BOX[i][0],BOX[i][1],isCentral));
   g.appendChild(nc);
 
   // 3) cara inicial: color + número
@@ -436,13 +458,17 @@ function settlePiece(i){
 function finalReveal(){
   setHint('');
   pieces.forEach(p=>p.classList.add('revealed'));   // revela la imagen UMAXIANOS
-  pieces[9].classList.add('done');                  // apaga la tapa central
-  // destellos
+  pieces[9].classList.add('done');
+  // estallido dorado + barrido de brillo
+  const burst=document.getElementById('burst'); burst.classList.remove('on'); void burst.offsetWidth; burst.classList.add('on');
+  const shine=document.getElementById('shine'); shine.classList.remove('on'); void shine.offsetWidth; shine.classList.add('on');
+  // muchos destellos
   const sp=document.getElementById('sparkles'); sp.innerHTML='';
-  for(let k=0;k<64;k++){const s=document.createElement('div');s.className='spark';s.style.left=(Math.random()*100)+'vw';s.style.top=(Math.random()*100)+'vh';s.style.animationDelay=(Math.random()*1.4)+'s';s.style.setProperty('--sz',(4+Math.random()*11)+'px');sp.appendChild(s);}
+  for(let k=0;k<130;k++){const s=document.createElement('div');s.className='spark';s.style.left=(Math.random()*100)+'vw';s.style.top=(Math.random()*100)+'vh';s.style.animationDelay=(Math.random()*1.8)+'s';s.style.animationDuration=(1.1+Math.random()*1.1)+'s';s.style.setProperty('--sz',(5+Math.random()*16)+'px');sp.appendChild(s);}
   sp.classList.add('on');
-  setTimeout(()=>board.classList.add('complete'),150);
-  setTimeout(()=>document.getElementById('endcard').classList.add('on'),900);
+  // zoom más notorio
+  setTimeout(()=>board.classList.add('complete'),120);
+  setTimeout(()=>document.getElementById('endcard').classList.add('on'),1100);
 }
 
 function updateCount(){document.getElementById('count').textContent=`${solved} / 10`;}
