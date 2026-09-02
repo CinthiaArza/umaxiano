@@ -256,16 +256,26 @@ function hide(){ stage.className='stage'; inner.innerHTML=''; }
 function destroyPlayer(){ if(player){try{player.destroy();}catch(e){} player=null;} }
 function ytEmbed(){ return '<div id="ytplayer" style="position:absolute;inset:0"></div>'; }
 let pending=null;
+// pantalla completa real (maximizada), best-effort multi-navegador
+function enterFullscreen(){
+  const el=document.documentElement;
+  const fn=el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen;
+  if(fn && !document.fullscreenElement){ try{ fn.call(el); }catch(_){} }
+}
+function forceHD(p){ try{ p.setPlaybackQuality('hd1080'); }catch(_){} }
 function mountPlayer(id,onEnd){
   destroyPlayer();
   if(!id) return;
   if(!window.YT||!YT.Player){ pending={id,onEnd}; return; }
   player=new YT.Player('ytplayer',{
     videoId:id,
-    playerVars:{rel:0,modestbranding:1,playsinline:1,autoplay:1,controls:1},
+    playerVars:{rel:0,modestbranding:1,playsinline:1,autoplay:1,controls:1,vq:'hd1080'},
     events:{
-      onReady:e=>{ try{e.target.playVideo();}catch(_){} },
-      onStateChange:e=>{ if(e.data===YT.PlayerState.ENDED) onEnd(); }
+      onReady:e=>{ forceHD(e.target); try{e.target.playVideo();}catch(_){} },
+      onStateChange:e=>{
+        if(e.data===YT.PlayerState.PLAYING) forceHD(e.target);   // reforzar 1080
+        if(e.data===YT.PlayerState.ENDED) onEnd();
+      }
     }
   });
 }
@@ -273,6 +283,7 @@ function mountPlayer(id,onEnd){
 /* ── clic → ZOOM del cuadro hacia video en pantalla completa ── */
 function openItem(i){
   const it=ITEMS[i];
+  enterFullscreen();                 // maximizar (dentro del gesto del clic)
   const rect=pieces[i].getBoundingClientRect();
   const [c1,c2]=ACCENTS[i];
   // preparar zoomer a pantalla completa, pero transformado para calzar en la pieza
