@@ -117,7 +117,7 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 <div class="hint" id="hint">Tocá la pieza que se resalta para comenzar.</div>
 
 <div class="endcard" id="endcard">
-  <div class="endtext"></div>
+  <div class="endtext">ADN completo</div>
   <button class="btn endrestart" onclick="location.reload()">Reiniciar</button>
 </div>
 
@@ -151,15 +151,15 @@ const IMAGEN_PROYECTO = IMG_DATA;  // DEMO: escudo UMAX embebido. Reemplazá por
 const LOGO_UMAX       = "";  // logo de la marca (vacío = texto)
 
 const VALORES = [
-  { nombre:"Integridad",            youtube:"",               fondo:"", mensaje:"Actuamos con rectitud, honestidad, ética y transparencia, en cada compromiso." },
-  { nombre:"Cordialidad",           youtube:"H9aTyDGwvTc",    fondo:"", mensaje:"Valoramos a cada persona, promoviendo el diálogo y la sana convivencia." },
-  { nombre:"Don de Servicio",       youtube:"",               fondo:"", mensaje:"Servimos con generosidad y actitud proactiva, contribuyendo al bienestar de nuestra comunidad." },
-  { nombre:"Solidaridad",           youtube:"Cilfgh-G0Nc",    fondo:"", mensaje:"Extendemos la mano a quien nos necesita, sin esperar nada a cambio." },
-  { nombre:"Empatía",               youtube:"sz_HYdD9qvM",    fondo:"", mensaje:"Escuchamos para comprender y comprendemos para servir." },
-  { nombre:"Compromiso con la Calidad",     youtube:"",                       fondo:"", mensaje:"Nos comprometemos con la excelencia mediante la mejora continua y la calidad en cada acción." },
-  { nombre:"Empoderamiento",        youtube:"cMbENpQHHf4",    fondo:"", mensaje:"Asumimos el protagonismo de nuestras acciones para servir y transformar." },
-  { nombre:"Creatividad",           youtube:"EvTvoidT2qY",    fondo:"", mensaje:"Transformamos los desafíos en oportunidades, generando soluciones innovadoras con propósito." },
-  { nombre:"Sentido de Pertenencia",        youtube:"IzJmsRaMko4",           fondo:"", mensaje:"Vivimos con orgullo nuestros valores, construyendo juntos una comunidad educativa que inspira y transforma vidas." },
+  { nombre:"Integridad",                youtube:"LMND5Gy_dhE", fondo:"", mensaje:"Actuamos con rectitud, honestidad, ética y transparencia, en cada compromiso." },
+  { nombre:"Cordialidad",               youtube:"H9aTyDGwvTc", fondo:"", mensaje:"Valoramos a cada persona, promoviendo el diálogo y la sana convivencia." },
+  { nombre:"Don de Servicio",           youtube:"",            fondo:"", mensaje:"Servimos con generosidad y actitud proactiva, contribuyendo al bienestar de nuestra comunidad." },
+  { nombre:"Solidaridad",               youtube:"Cilfgh-G0Nc", fondo:"", mensaje:"Extendemos la mano a quien nos necesita, sin esperar nada a cambio." },
+  { nombre:"Empatía",                   youtube:"sz_HYdD9qvM", fondo:"", mensaje:"Escuchamos para comprender y comprendemos para servir." },
+  { nombre:"Compromiso con la Calidad", youtube:"",            fondo:"", mensaje:"Nos comprometemos con la excelencia mediante la mejora continua y la calidad en cada acción." },
+  { nombre:"Empoderamiento",            youtube:"cMbENpQHHf4", fondo:"", mensaje:"Asumimos el protagonismo de nuestras acciones para servir y transformar." },
+  { nombre:"Creatividad",               youtube:"EvTvoidT2qY", fondo:"", mensaje:"Transformamos los desafíos en oportunidades, generando soluciones innovadoras con propósito." },
+  { nombre:"Sentido de Pertenencia",    youtube:"IzJmsRaMko4", fondo:"", mensaje:"Vivimos con orgullo nuestros valores, construyendo juntos una comunidad educativa que inspira y transforma vidas." },
 ];
 
 const CENTRAL = {
@@ -171,12 +171,20 @@ const CENTRAL = {
 /* ╚═══════════════════ FIN DE LA CONFIG ═══════════════════╝ */
 
 const ACCENTS=[
-  ['#bd0811','#9a161c'],['#b66800','#8a4f00'],['#9a161c','#5c0d11'],
-  ['#cf7a1a','#b66800'],['#8f1218','#bd0811'],['#b66800','#d99a2b'],
-  ['#7a1015','#9a161c'],['#c85a12','#b66800'],['#a50a12','#bd0811'],
-  ['#bd0811','#9a161c'],
+  ['#0300C7','#02008b'], // 1 Integridad · azul
+  ['#C700BA','#8b0082'], // 2 Cordialidad · magenta
+  ['#7BC700','#568b00'], // 3 Don de Servicio · verde lima
+  ['#C70700','#8b0400'], // 4 Solidaridad · rojo
+  ['#025425','#013a19'], // 5 Empatía · verde oscuro
+  ['#F7FF00','#acb200'], // 6 Compromiso con la Calidad · amarillo
+  ['#EF9000','#a76400'], // 7 Empoderamiento · naranja (asumido)
+  ['#00C3FF','#0088b2'], // 8 Creatividad · celeste
+  ['#800020','#590016'], // 9 Sentido de Pertenencia · bordo
+  ['#680691','#480465'], // 10 Espiritualidad · violeta (central)
 ];
 const ITEMS = VALORES.concat([CENTRAL]);
+function lum(hex){const h=hex.replace('#','');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return 0.2126*r+0.7152*g+0.0722*b;}
+
 
 let current=0, solved=0, player=null;
 const stage=document.getElementById('stage');
@@ -229,7 +237,12 @@ PIECE_PATHS.forEach((d,i)=>{
   }
   const num=document.createElementNS(SVGNS,'text');num.setAttribute('class','num');
   num.setAttribute('x',CENTERS[i][0]);num.setAttribute('y',CENTERS[i][1]);
-  num.setAttribute('font-size',isCentral?'150':'92');num.textContent=(i+1);cover.appendChild(num);
+  num.setAttribute('font-size',isCentral?'150':'92');
+  const claro = lum(ACCENTS[i][0])>150;               // color de pieza claro
+  num.setAttribute('fill', claro ? '#141013' : '#fff');
+  num.setAttribute('stroke', claro ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.22)');
+  num.setAttribute('stroke-width','2'); num.setAttribute('paint-order','stroke');
+  num.textContent=(i+1);cover.appendChild(num);
   g.appendChild(cover);
   const out=document.createElementNS(SVGNS,'path');out.setAttribute('class','contorno');out.setAttribute('d',d);g.appendChild(out);
   g.addEventListener('click',()=>{ if(i===current && !g.classList.contains('done')) openItem(i); });
