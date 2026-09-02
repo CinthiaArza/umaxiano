@@ -26,8 +26,8 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 .board-svg.complete{transform:scale(1.16)}
 /* cara final blanca con el nombre del valor */
 /* cierre: destellos + logo UMAXIANOS */
-.endcard{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2.2vh;pointer-events:none;
-  background:radial-gradient(120% 100% at 50% 45%, #ffffff 55%, #f2eee7 100%)}
+.endcard{position:fixed;inset:0;z-index:39;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2.2vh;pointer-events:none;
+  background:transparent}
 .endcard.on{display:flex;animation:fadein .8s ease both}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 .final-logo{width:min(74vh,92vw);aspect-ratio:16/9;background-image:var(--img);background-size:contain;background-repeat:no-repeat;background-position:center;
@@ -57,7 +57,7 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 .pieza.done{cursor:default}
 .pieza .namecard{opacity:0;transition:opacity .6s ease}
 .pieza.named .namecard{opacity:1}
-.pieza.named .slice-img{opacity:1}
+.pieza.named .slice-img{opacity:0}
 .pieza.done .cover{opacity:0;pointer-events:none}
 .pieza.done .contorno{stroke:var(--tinta);stroke-opacity:.14;stroke-width:1.5}
 .pieza.revealed .namecard{opacity:0}
@@ -159,7 +159,7 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 <div id="burst"></div>
 <div class="endcard" id="endcard">
   <div class="sparkles" id="sparkles"></div>
-  <div class="final-logo" id="finalLogo"></div>
+  <div class="final-logo" id="finalLogo" aria-hidden="true" style="display:none"></div>
   <div class="endtext"></div>
   <button class="btn endrestart" onclick="location.reload()">Reiniciar</button>
 </div>
@@ -301,6 +301,11 @@ PIECE_PATHS.forEach((d,i)=>{
 
   // 2) cara descubierta: fondo BLANCO + nombre del valor
   const nc=document.createElementNS(SVGNS,'g');nc.setAttribute('class','namecard');nc.setAttribute('clip-path','url(#clip'+i+')');
+  const whiteFace=document.createElementNS(SVGNS,'rect');
+  whiteFace.setAttribute('x','0');whiteFace.setAttribute('y','0');
+  whiteFace.setAttribute('width',VBW);whiteFace.setAttribute('height',VBH);
+  whiteFace.setAttribute('fill','#fff');
+  nc.appendChild(whiteFace);
   nc.appendChild(wrapName(CENTERS[i][0],CENTERS[i][1],(i+1),ITEMS[i].nombre,readable(ACCENTS[i][0]),'#9b9b9b',BOX[i][0],BOX[i][1],isCentral));
   g.appendChild(nc);
 
@@ -456,7 +461,10 @@ function settlePiece(i){
 
 function finalReveal(){
   setHint('');
-  pieces.forEach(p=>p.classList.add('revealed'));   // revela la imagen UMAXIANOS
+  // Solo aquí se descubre la imagen completa de UMAXIANOS.
+  // Las piezas anteriores permanecen con su cara blanca y su valor hasta este momento.
+  pieces.forEach(p=>p.classList.add('revealed'));
+  pieces.forEach(p=>p.classList.remove('named'));
   pieces[9].classList.add('done');
   // estallido dorado + barrido de brillo
   const burst=document.getElementById('burst'); burst.classList.remove('on'); void burst.offsetWidth; burst.classList.add('on');
