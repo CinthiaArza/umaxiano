@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>UMAXIANO</title>
 
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -22,12 +23,11 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ── PUZLE A PANTALLA COMPLETA ── */
-.board-svg{position:fixed;inset:0;width:100vw;height:100svh;display:block;transition:transform 3.2s cubic-bezier(.2,.7,.2,1);transform-origin:50% 50%}
-.board-svg.complete{transform:scale(1.16)}
+.board-svg{position:fixed;inset:0;width:100vw;height:100svh;display:block;transition:transform 3.4s cubic-bezier(.22,.61,.24,1);transform-origin:50% 50%}
+.board-svg.complete{transform:scale(1.10)}
 /* cara final blanca con el nombre del valor */
 /* cierre: destellos + logo UMAXIANOS */
-.endcard{position:fixed;inset:0;z-index:39;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2.2vh;pointer-events:none;
-  background:transparent}
+.endcard{position:fixed;inset:0;z-index:40;display:none;pointer-events:none;background:transparent}
 .endcard.on{display:flex;animation:fadein .8s ease both}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 .final-logo{width:min(74vh,92vw);aspect-ratio:16/9;background-image:var(--img);background-size:contain;background-repeat:no-repeat;background-position:center;
@@ -35,7 +35,8 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 @keyframes logoPop{0%{opacity:0;transform:scale(.6) rotate(-4deg)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1) rotate(0)}}
 @keyframes logoGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(120,44,191,0))}50%{filter:drop-shadow(0 0 26px rgba(120,44,191,.35))}}
 .endcard .endtext{font-family:var(--display);font-size:clamp(2.2rem,7vh,4rem);color:var(--rojo);animation:rise 1s ease .3s both}
-.endcard .endrestart{pointer-events:auto;background:rgba(255,255,255,.8);color:var(--tinta);border-color:var(--linea)}
+.endcard .endrestart{pointer-events:auto;position:absolute;bottom:4.5vh;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.8);color:var(--tinta);border-color:var(--linea)}
+.endcard .endrestart:active{transform:translateX(-50%) translateY(1px) scale(.98)}
 .endcard .endrestart:hover{border-color:var(--gris)}
 .sparkles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .spark{position:absolute;width:var(--sz);height:var(--sz);border-radius:50%;
@@ -57,9 +58,10 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 .pieza.done{cursor:default}
 .pieza .namecard{opacity:0;transition:opacity .6s ease}
 .pieza.named .namecard{opacity:1}
-.pieza.named .slice-img{opacity:0}
 .pieza.done .cover{opacity:0;pointer-events:none}
 .pieza.done .contorno{stroke:var(--tinta);stroke-opacity:.14;stroke-width:1.5}
+.pieza.named:not(.revealed){filter:drop-shadow(0 2px 5px rgba(20,16,19,.20))}
+.pieza.named:not(.revealed) .contorno{stroke:rgba(20,16,19,.22);stroke-width:2}
 .pieza.revealed .namecard{opacity:0}
 .pieza.revealed .slice-img{opacity:1}
 .nmc{display:flex;align-items:center;justify-content:center;height:100%;text-align:center;font-family:var(--ui);font-weight:700;line-height:1.12;letter-spacing:.02em}
@@ -85,16 +87,31 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 .zoomer .zvideo{position:absolute;inset:0;opacity:0;transition:opacity .35s ease .1s;background:#000}
 .zoomer .zvideo iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
-/* ── destellos del cierre ── */
+#vignette{position:fixed;inset:0;z-index:36;pointer-events:none;opacity:0;
+  background:radial-gradient(125% 92% at 50% 47%, transparent 54%, rgba(20,16,19,.26) 100%)}
+#vignette.on{animation:vig 5s ease forwards}
+@keyframes vig{0%{opacity:0}22%{opacity:1}66%{opacity:1}100%{opacity:0}}
+/* ── cierre ── */
+#thread{position:fixed;inset:0;z-index:47;pointer-events:none;display:none}
+#thread.on{display:block}
+#thread svg{width:100vw;height:100svh;display:block}
+#threadPath{fill:none;stroke:url(#tg);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 9px rgba(230,184,78,.75))}
+#thread.on #threadPath{animation:weave 1.9s cubic-bezier(.5,0,.2,1) forwards}
+@keyframes weave{from{stroke-dashoffset:var(--L)}to{stroke-dashoffset:0}}
+
+#flash{position:fixed;inset:0;z-index:46;background:#fff;opacity:0;pointer-events:none;display:none}
+#flash.on{display:block;animation:flash 4.6s ease forwards}
+@keyframes flash{0%{opacity:0}8%{opacity:1}46%{opacity:1}100%{opacity:0}}
+
 #burst{position:fixed;left:50%;top:50%;z-index:37;pointer-events:none;display:none;width:40px;height:40px;border-radius:50%;transform:translate(-50%,-50%);
   background:radial-gradient(circle,rgba(255,244,205,.95),rgba(255,215,106,.55),transparent 70%)}
 #burst.on{display:block;animation:burst 1.15s ease-out both}
 @keyframes burst{0%{opacity:.95;width:60px;height:60px}100%{opacity:0;width:170vmax;height:170vmax}}
 #shine{position:fixed;inset:0;z-index:37;pointer-events:none;display:none;overflow:hidden}
 #shine.on{display:block}
-#shine::before{content:"";position:absolute;top:-50%;left:-60%;width:38%;height:200%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);transform:rotate(18deg);
-  animation:sweep 1.6s ease-in-out .15s 1 both}
+#shine::before{content:"";position:absolute;top:-50%;left:-60%;width:32%;height:200%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);transform:rotate(18deg);
+  animation:sweep 1.9s cubic-bezier(.4,0,.2,1) 0s 1 both}
 @keyframes sweep{from{left:-60%}to{left:120%}}
 
 #sparkles{position:fixed;inset:0;z-index:38;pointer-events:none;display:none}
@@ -116,6 +133,7 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
 .value-eyebrow{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--oro);margin-bottom:14px}
 .controls{margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .msg-eyebrow{font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;margin-bottom:18px;color:#e8626a}
+.msg-gold{color:#e6b84e;font-weight:700}
 .msg-text{font-family:var(--display);font-size:2.4rem;line-height:1.28;max-width:min(30ch,90vw);margin:0 auto;color:#fff;animation:rise 1s ease both}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .reveal{perspective:1300px}
@@ -152,16 +170,16 @@ body{font-family:var(--ui);color:var(--tinta);background:var(--papel);height:100
   </div>
   <div class="count" id="count">0 / 10</div>
 </div>
-<div class="hint" id="hint"></div>
+<div class="hint" id="hint">Tocá la pieza que se resalta para comenzar.</div>
 
+<div id="flash"></div>
+<div id="thread"><svg viewBox="0 0 1280 720" preserveAspectRatio="none"><defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b87a17"/><stop offset="0.5" stop-color="#efce6a"/><stop offset="1" stop-color="#b87a17"/></linearGradient></defs><path id="threadPath" d="M 90 360.0 L 96 366.0 L 102 372.0 L 108 378.0 L 114 383.9 L 120 389.8 L 126 395.7 L 132 401.5 L 138 407.2 L 144 412.8 L 150 418.4 L 156 423.9 L 162 429.3 L 168 434.5 L 174 439.7 L 180 444.7 L 186 449.6 L 192 454.3 L 198 458.9 L 204 463.3 L 210 467.6 L 216 471.7 L 222 475.6 L 228 479.3 L 234 482.9 L 240 486.2 L 246 489.4 L 252 492.3 L 258 495.0 L 264 497.5 L 270 499.8 L 276 501.9 L 282 503.7 L 288 505.3 L 294 506.7 L 300 507.8 L 306 508.7 L 312 509.4 L 318 509.8 L 324 510.0 L 330 509.9 L 336 509.6 L 342 509.1 L 348 508.3 L 354 507.3 L 360 506.1 L 366 504.6 L 372 502.9 L 378 500.9 L 384 498.8 L 390 496.4 L 396 493.8 L 402 491.0 L 408 487.9 L 414 484.7 L 420 481.3 L 426 477.6 L 432 473.8 L 438 469.8 L 444 465.7 L 450 461.3 L 456 456.8 L 462 452.2 L 468 447.3 L 474 442.4 L 480 437.3 L 486 432.1 L 492 426.8 L 498 421.4 L 504 415.9 L 510 410.2 L 516 404.6 L 522 398.8 L 528 393.0 L 534 387.1 L 540 381.2 L 546 375.2 L 552 369.2 L 558 363.2 L 564 357.2 L 570 351.2 L 576 345.3 L 582 339.3 L 588 333.4 L 594 327.5 L 600 321.7 L 606 315.9 L 612 310.2 L 618 304.6 L 624 299.1 L 630 293.6 L 636 288.3 L 642 283.1 L 648 278.0 L 654 273.0 L 660 268.2 L 666 263.6 L 672 259.0 L 678 254.7 L 684 250.5 L 690 246.5 L 696 242.6 L 702 239.0 L 708 235.6 L 714 232.3 L 720 229.3 L 726 226.4 L 732 223.8 L 738 221.4 L 744 219.2 L 750 217.3 L 756 215.5 L 762 214.0 L 768 212.8 L 774 211.7 L 780 210.9 L 786 210.4 L 792 210.1 L 798 210.0 L 804 210.2 L 810 210.6 L 816 211.2 L 822 212.1 L 828 213.2 L 834 214.6 L 840 216.2 L 846 218.0 L 852 220.0 L 858 222.3 L 864 224.8 L 870 227.5 L 876 230.4 L 882 233.5 L 888 236.8 L 894 240.4 L 900 244.1 L 906 248.0 L 912 252.1 L 918 256.3 L 924 260.7 L 930 265.3 L 936 270.0 L 942 274.9 L 948 279.9 L 954 285.1 L 960 290.3 L 966 295.7 L 972 301.1 L 978 306.7 L 984 312.4 L 990 318.1 L 996 323.9 L 1002 329.7 L 1008 335.6 L 1014 341.6 L 1020 347.5 L 1026 353.5 L 1032 359.5 L 1038 365.5 L 1044 371.5 L 1050 377.5 L 1056 383.4 L 1062 389.3 L 1068 395.2 L 1074 401.0 L 1080 406.7 L 1086 412.4 L 1092 418.0 L 1098 423.5 L 1104 428.8 L 1110 434.1 L 1116 439.3 L 1122 444.3 L 1128 449.2 L 1134 453.9 L 1140 458.5 L 1146 463.0 L 1152 467.3 L 1158 471.4 L 1164 475.3 L 1170 479.1 L 1176 482.6 L 1182 486.0 L 1188 489.1"/></svg></div>
+<div id="vignette"></div>
 <div id="sparkles"></div>
 <div id="shine"></div>
 <div id="burst"></div>
 <div class="endcard" id="endcard">
-  <div class="sparkles" id="sparkles"></div>
-  <div class="final-logo" id="finalLogo" aria-hidden="true" style="display:none"></div>
-  <div class="endtext"></div>
-  <button class="btn endrestart" onclick="location.reload()"></button>
+  <button class="btn endrestart" onclick="location.reload()">Reiniciar</button>
 </div>
 
 <div class="zoomer" id="zoomer" style="display:none"><div class="zface" id="zface"></div><div class="zvideo" id="zvideo"></div></div>
@@ -196,7 +214,7 @@ const LOGO_UMAX       = "";  // logo de la marca (vacío = texto)
 const VALORES = [
   { nombre:"Integridad",                youtube:"LMND5Gy_dhE", fondo:"", mensaje:"Actuamos con rectitud, honestidad, ética y transparencia, en cada compromiso." },
   { nombre:"Cordialidad",               youtube:"RSemKM5ev20", fondo:"", mensaje:"Valoramos a cada persona, promoviendo el diálogo y la sana convivencia." },
-  { nombre:"Don de Servicio",           youtube:"HEXtzI7aCiY", fondo:"", mensaje:"Servimos con generosidad y actitud proactiva, contribuyendo al bienestar de nuestra comunidad." },
+  { nombre:"Don de Servicio",           youtube:"bEoRJUW8o9k", fondo:"", mensaje:"Servimos con generosidad y actitud proactiva, contribuyendo al bienestar de nuestra comunidad." },
   { nombre:"Solidaridad",               youtube:"Cilfgh-G0Nc", fondo:"", mensaje:"Extendemos la mano a quien nos necesita, sin esperar nada a cambio." },
   { nombre:"Empatía",                   youtube:"sz_HYdD9qvM", fondo:"", mensaje:"Escuchamos para comprender y comprendemos para servir." },
   { nombre:"Compromiso con la Calidad", youtube:"iPwtZmiu9oA", fondo:"", mensaje:"Nos comprometemos con la excelencia mediante la mejora continua y la calidad en cada acción." },
@@ -207,7 +225,7 @@ const VALORES = [
 
 const CENTRAL = {
   nombre:"Espiritualidad", youtube:"lzsvESndmkE", fondo:"",
-  mensaje:"No es solo un valor entre diez, sino el hilo dorado que teje, une y da vida a los otros nueve: integridad, cordialidad, servicio, solidaridad, empatía, compromiso, empoderamiento, creatividad y pertenencia. Bajo la mirada de María Auxiliadora, nuestro decálogo se convierte en una sola alma y nuestras acciones.",
+  mensaje:"No es solo un valor entre diez, sino el hilo dorado que teje, une y da vida a los otros nueve: integridad, cordialidad, servicio, solidaridad, empatía, compromiso, empoderamiento, creatividad y pertenencia. <span class=\'msg-gold\'>Bajo la mirada de María Auxiliadora, nuestro decálogo se convierte en una sola alma y nuestras acciones.</span>",
   cierre:"Este es el ADN UMAX: la suma de nuestros valores en acción."
 };
 
@@ -229,29 +247,37 @@ const ITEMS = VALORES.concat([CENTRAL]);
 function lum(hex){const h=hex.replace('#','');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return 0.2126*r+0.7152*g+0.0722*b;}
 const BOX=[[320,180],[640,180],[320,180],[320,180],[320,180],[320,180],[640,180],[320,180],[320,360],[640,360]];
 function wrapName(cx,cy,idx,name,color,muted,boxW,boxH,central){
-  const words=name.toUpperCase().split(/\s+/);
-  let fs= central?52:32;
-  const padW=boxW-44;
-  const labelFS=Math.max(15,Math.round((central?52:32)*0.44));
-  const labelLh=labelFS*1.8;
-  const padH=boxH-30-labelLh;
-  const longest=Math.max.apply(null,words.map(w=>w.length));
-  while(longest*fs*0.60>padW && fs>14) fs-=1;
-  const cpl=Math.max(4,Math.floor(padW/(fs*0.60)));
-  const lines=[]; let line='';
-  for(const w of words){ const t=line?line+' '+w:w; if(t.length<=cpl){line=t;} else {if(line)lines.push(line); line=w;} }
-  if(line)lines.push(line);
-  let lh=fs*1.12;
-  while(lines.length*lh>padH && fs>12){ fs-=1; lh=fs*1.12; }
-  const total=labelLh+lines.length*lh, top=cy-total/2;
-  const t=document.createElementNS(SVGNS,'text');
-  t.setAttribute('text-anchor','middle');t.setAttribute('font-family',"'Inter',system-ui,sans-serif");t.setAttribute('font-weight','700');
+  const words=name.split(/\s+/);
+  const padW=boxW-48;
+  const labelFS=Math.max(15,Math.round((central?58:36)*0.34));
+  const labelLh=labelFS*1.9;
+  const padH=boxH-28-labelLh;
+  const F=0.55;
+  let fs= central?58:36;
+  function wrapAt(f){
+    const cpl=Math.max(3,Math.floor(padW/(f*F)));
+    const lines=[]; let line='';
+    for(const w of words){ const t=line?line+' '+w:w; if(t.length<=cpl){line=t;} else {if(line)lines.push(line); line=w;} }
+    if(line)lines.push(line);
+    return lines;
+  }
+  let lines=wrapAt(fs), guard=0;
+  while(guard++<70){
+    const longest=Math.max.apply(null,lines.map(l=>l.length));
+    const wOK=longest*fs*F<=padW, hOK=lines.length*fs*1.08<=padH;
+    if(wOK&&hOK) break;
+    fs-=1; if(fs<12){fs=12; lines=wrapAt(fs); break;} lines=wrapAt(fs);
+  }
+  const lh=fs*1.1, total=labelLh+lines.length*lh, top=cy-total/2;
+  const t=document.createElementNS(SVGNS,'text'); t.setAttribute('text-anchor','middle');
   const lb=document.createElementNS(SVGNS,'tspan');
-  lb.setAttribute('x',cx);lb.setAttribute('y',top+labelFS);lb.setAttribute('font-size',labelFS);lb.setAttribute('fill',muted);lb.setAttribute('letter-spacing','3');lb.setAttribute('font-weight','600');lb.setAttribute('stroke','#fff');lb.setAttribute('stroke-width',Math.max(2,labelFS*0.16));lb.setAttribute('paint-order','stroke');lb.setAttribute('stroke-linejoin','round');
-  lb.textContent='Valor '+idx;
-  t.appendChild(lb);
+  lb.setAttribute('x',cx);lb.setAttribute('y',top+labelFS);lb.setAttribute('font-size',labelFS);lb.setAttribute('fill',muted);
+  lb.setAttribute('letter-spacing','3');lb.setAttribute('font-weight','600');lb.setAttribute('font-family',"'Inter',system-ui,sans-serif");
+  lb.textContent='VALOR '+idx; t.appendChild(lb);
   const nameTop=top+labelLh;
-  lines.forEach((ln,k)=>{const ts=document.createElementNS(SVGNS,'tspan');ts.setAttribute('x',cx);ts.setAttribute('y',nameTop+fs+k*lh);ts.setAttribute('font-size',fs);ts.setAttribute('fill',color);ts.setAttribute('letter-spacing','.5');ts.setAttribute('stroke','#fff');ts.setAttribute('stroke-width',Math.max(3,fs*0.14));ts.setAttribute('paint-order','stroke');ts.setAttribute('stroke-linejoin','round');ts.textContent=ln;t.appendChild(ts);});
+  lines.forEach((ln,k)=>{const ts=document.createElementNS(SVGNS,'tspan');ts.setAttribute('x',cx);ts.setAttribute('y',nameTop+fs+k*lh);
+    ts.setAttribute('font-size',fs);ts.setAttribute('fill',color);ts.setAttribute('font-family',"'Aptos Narrow','Aptos','Arial Narrow',sans-serif");ts.setAttribute('font-weight','900');ts.setAttribute('font-stretch','condensed');
+    ts.textContent=ln;t.appendChild(ts);});
   return t;
 }
 function readable(hex){const h=hex.replace('#','');let r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);let f=1;const L=()=>0.2126*r*f+0.7152*g*f+0.0722*b*f;while(L()>120&&f>0.18)f-=0.08;return `rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`;}
@@ -301,11 +327,7 @@ PIECE_PATHS.forEach((d,i)=>{
 
   // 2) cara descubierta: fondo BLANCO + nombre del valor
   const nc=document.createElementNS(SVGNS,'g');nc.setAttribute('class','namecard');nc.setAttribute('clip-path','url(#clip'+i+')');
-  const whiteFace=document.createElementNS(SVGNS,'rect');
-  whiteFace.setAttribute('x','0');whiteFace.setAttribute('y','0');
-  whiteFace.setAttribute('width',VBW);whiteFace.setAttribute('height',VBH);
-  whiteFace.setAttribute('fill','#fff');
-  nc.appendChild(whiteFace);
+  const wr=document.createElementNS(SVGNS,'rect');wr.setAttribute('width',VBW);wr.setAttribute('height',VBH);wr.setAttribute('fill','#ffffff');nc.appendChild(wr);
   nc.appendChild(wrapName(CENTERS[i][0],CENTERS[i][1],(i+1),ITEMS[i].nombre,readable(ACCENTS[i][0]),'#9b9b9b',BOX[i][0],BOX[i][1],isCentral));
   g.appendChild(nc);
 
@@ -454,31 +476,25 @@ function settlePiece(i){
   if(i<9) p.classList.add('named');
   setTimeout(()=>p.classList.remove('settling'),800);
   solved++;updateCount();
-  if(i<8){ current=i+1;const nx=pieces[i+1];nx.classList.remove('locked');nx.classList.add('available');setHint(''); }
-  else if(i===8){ current=9;const c=pieces[9];c.classList.remove('locked');c.classList.add('available');setHint(''); }
+  if(i<8){ current=i+1;const nx=pieces[i+1];nx.classList.remove('locked');nx.classList.add('available');setHint('Continuá con la siguiente pieza.'); }
+  else if(i===8){ current=9;const c=pieces[9];c.classList.remove('locked');c.classList.add('available');setHint('Tocá la pieza central para descubrir lo que une todo.'); }
   else if(i===9){ finalReveal(); }
 }
 
 function finalReveal(){
   setHint('');
-  // Solo aquí se descubre la imagen completa de UMAXIANOS.
-  // Las piezas anteriores permanecen con su cara blanca y su valor hasta este momento.
-  pieces.forEach(p=>p.classList.add('revealed'));
-  pieces.forEach(p=>p.classList.remove('named'));
-  pieces[9].classList.add('done');
-  // estallido dorado + barrido de brillo
-  const burst=document.getElementById('burst'); burst.classList.remove('on'); void burst.offsetWidth; burst.classList.add('on');
-  const shine=document.getElementById('shine'); shine.classList.remove('on'); void shine.offsetWidth; shine.classList.add('on');
-  // muchos destellos
-  const sp=document.getElementById('sparkles'); sp.innerHTML='';
-  for(let k=0;k<130;k++){const s=document.createElement('div');s.className='spark';s.style.left=(Math.random()*100)+'vw';s.style.top=(Math.random()*100)+'vh';s.style.animationDelay=(Math.random()*1.8)+'s';s.style.animationDuration=(1.1+Math.random()*1.1)+'s';s.style.setProperty('--sz',(5+Math.random()*16)+'px');sp.appendChild(s);}
-  sp.classList.add('on');
-  // zoom más notorio
-  setTimeout(()=>board.classList.add('complete'),120);
-  setTimeout(()=>document.getElementById('endcard').classList.add('on'),1100);
+  const flash=document.getElementById('flash'); flash.classList.remove('on'); void flash.offsetWidth; flash.classList.add('on');
+  const thread=document.getElementById('thread'); thread.classList.remove('on'); void thread.offsetWidth; thread.classList.add('on'); // hilo dorado
+  // revelar la imagen UMAXIANOS detrás (durante el blanco)
+  setTimeout(()=>{ pieces.forEach(p=>p.classList.add('revealed')); pieces[9].classList.add('done'); board.classList.add('complete'); },2050);
+  setTimeout(()=>{ thread.classList.remove('on'); },2250);
+  // reflejo que barre el logo cuando aparece
+  setTimeout(()=>{ const sh=document.getElementById('shine'); sh.classList.remove('on'); void sh.offsetWidth; sh.classList.add('on'); },2350);
+  setTimeout(()=>document.getElementById('endcard').classList.add('on'),4600);
 }
 
 function updateCount(){document.getElementById('count').textContent=`${solved} / 10`;}
 function setHint(t){const h=document.getElementById('hint');h.style.opacity='0';setTimeout(()=>{h.textContent=t;h.style.opacity=t?'1':'0';},200);}
+(function(){const tp=document.getElementById('threadPath'); if(tp){const L=tp.getTotalLength(); tp.style.strokeDasharray=L; tp.style.setProperty('--L',L+'px');}})();
 function onYouTubeIframeAPIReady(){ if(pending && document.getElementById('ytplayer')){ const p=pending; pending=null; mountPlayer(p.id,p.onEnd); } }
 </script></body></html>
